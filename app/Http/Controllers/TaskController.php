@@ -4,13 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
     public function index()
     {
-        $tasks = Auth::user()->tasks()->latest()->get();
+        $tasks = Task::where('user_id', auth()->id())->latest()->get();
         return view('tasks.index', compact('tasks'));
     }
 
@@ -23,43 +22,18 @@ class TaskController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'priority' => 'required',
+            'due_date' => 'nullable|date',
         ]);
 
-        Auth::user()->tasks()->create(
-           $request->only(['title','description','priority','due_date'])
-        );
+        Task::create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'status' => 'pending',
+            'due_date' => $request->due_date,
+            'user_id' => auth()->id(),
+        ]);
 
-        return redirect()->route('tasks.index')->with('success', 'Task created successfully');
-    }
-
-    public function edit(Task $task)
-    {
-        $this->authorizeTask($task);
-        return view('tasks.edit', compact('task'));
-    }
-
-    public function update(Request $request, Task $task)
-    {
-        $this->authorizeTask($task);
-        $task->update($request->all());
-
-        return redirect()->route('tasks.index')->with('success', 'Task updated');
-    }
-
-    public function destroy(Task $task)
-    {
-        $this->authorizeTask($task);
-        $task->delete();
-
-        return back()->with('success', 'Task deleted');
-    }
-
-    private function authorizeTask(Task $task)
-    {
-        if ($task->user_id !== Auth::id()) {
-            abort(403);
-        }
+        return redirect()->route('tasks.index')->with('success', 'Task created!');
     }
 }
 
