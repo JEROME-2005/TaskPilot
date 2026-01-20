@@ -1,17 +1,37 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+    <div class="p-6 space-y-6">
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
-                </div>
-            </div>
+        <h2 class="text-2xl font-bold">Welcome back 👋</h2>
+
+        {{-- Today --}}
+        <div class="bg-white p-4 rounded shadow">
+            <h3 class="font-semibold text-lg">📅 Today’s Tasks</h3>
+            @forelse($todayTasks as $task)
+                <p>• {{ $task->title }}</p>
+            @empty
+                <p class="text-gray-500">No tasks for today</p>
+            @endforelse
         </div>
+
+        {{-- Urgent --}}
+        <div class="bg-red-50 p-4 rounded shadow">
+            <h3 class="font-semibold text-lg text-red-600">🔥 Urgent Tasks</h3>
+            @forelse($urgentTasks as $task)
+                <p>• {{ $task->title }}</p>
+            @empty
+                <p class="text-gray-500">No urgent tasks</p>
+            @endforelse
+        </div>
+
+        {{-- Overdue --}}
+        <div class="bg-yellow-50 p-4 rounded shadow">
+            <h3 class="font-semibold text-lg text-yellow-700">⏰ Overdue Tasks</h3>
+            @forelse($overdueTasks as $task)
+                <p>• {{ $task->title }}</p>
+            @empty
+                <p class="text-gray-500">No overdue tasks</p>
+            @endforelse
+        </div>
+
     </div>
 </x-app-layout>
