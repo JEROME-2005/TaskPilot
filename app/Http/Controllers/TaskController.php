@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class TaskController extends Controller
 {
@@ -21,19 +23,20 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
-            'due_date' => 'nullable|date',
-        ]);
+          'title' => 'required|string|max:255',
+          'description' => 'nullable|string',
+          'due_date' => 'nullable|date',
+       ]);
 
         Task::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'status' => 'pending',
-            'due_date' => $request->due_date,
-            'user_id' => auth()->id(),
-        ]);
+           'user_id' => Auth::id(), // 🔥 THIS IS THE FIX
+           'title' => $request->title,
+           'description' => $request->description,
+           'status' => 'pending',
+           'due_date' => $request->due_date,
+       ]);
 
-        return redirect()->route('tasks.index')->with('success', 'Task created!');
+        return redirect()->route('tasks.index')->with('success', 'Task created successfully');
     }
 }
 

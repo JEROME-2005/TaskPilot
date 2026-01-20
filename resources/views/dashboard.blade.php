@@ -32,6 +32,10 @@
                 <p class="text-gray-500">No overdue tasks</p>
             @endforelse
         </div>
-
+        @if($task->isOverdue())
+           <span class="badge bg-danger">Overdue</span>
+        @elseif($task->isUrgent())
+           <span class="badge bg-warning text-dark">Urgent</span>
+        @endif
     </div>
 </x-app-layout>
