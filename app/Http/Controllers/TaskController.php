@@ -48,5 +48,36 @@ class TaskController extends Controller
       return redirect()->back()->with('success', 'Task completed');
     }
 
+    public function edit(Task $task)
+    {
+      return view('tasks.edit', compact('task'));
+    }
+
+    public function update(Request $request, Task $task)
+    {
+     $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'due_date' => 'required|date',
+     ]);
+
+     $task->update($request->all());
+
+     return redirect()->route('tasks.index')->with('success', 'Task updated successfully');
+    }
+    
+    public function destroy(Task $task)
+    {
+     // Optional security (recommended)
+     //$this->authorize('delete', $task);
+
+     $task->delete();
+
+     return redirect()
+        ->route('tasks.index')
+        ->with('success', 'Task deleted successfully');
+    }
+
+
 }
 
