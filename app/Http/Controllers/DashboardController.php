@@ -28,10 +28,16 @@ class DashboardController extends Controller
             ->where('status', '!=', 'completed')
             ->get();
 
+        $reminderTasks = Task::whereNotNull('reminder_at')
+            ->where('reminder_at', '<=', now())
+            ->where('status', 'pending')
+            ->get();
+
         return view('dashboard', compact(
             'todayTasks',
             'urgentTasks',
-            'overdueTasks'
+            'overdueTasks',
+            'reminderTasks'
         ));
     }
 }

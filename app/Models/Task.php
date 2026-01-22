@@ -50,4 +50,12 @@ class Task extends Model
             && !$this->reminder_sent
             && $this->status === 'pending';
     }
+
+    public function hasActiveReminder(): bool
+    {
+        return $this->reminder_at !== null
+            && $this->reminder_at <= now()
+            && $this->status === 'pending';
+    }
+
 }
